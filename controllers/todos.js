@@ -1,28 +1,28 @@
-const Todo = require('../models/Todo')
+const Item = require('../models/Item')
 
 module.exports = {
-    getTodos: async (req,res)=>{
+    getItems: async (req,res)=>{
         console.log(req.user)
         try{
-            const todoItems = await Todo.find({userId:req.user.id})
-            const itemsLeft = await Todo.countDocuments({userId:req.user.id,completed: false})
-            res.render('todos.ejs', {todos: todoItems, left: itemsLeft, user: req.user})
+            const itemItems = await Item.find({userId:req.user.id})
+            const itemsLeft = await Item.countDocuments({userId:req.user.id,completed: false})
+            res.render('items.ejs', {items: itemItems, left: itemsLeft, user: req.user})
         }catch(err){
             console.log(err)
         }
     },
-    createTodo: async (req, res)=>{
+    createItem: async (req, res)=>{
         try{
-            await Todo.create({todo: req.body.todoItem, completed: false, userId: req.user.id})
-            console.log('Todo has been added!')
-            res.redirect('/todos')
+            await Item.create({item: req.body.orderItem, completed: false, userId: req.user.id})
+            console.log('Item has been added!')
+            res.redirect('/items')
         }catch(err){
             console.log(err)
         }
     },
     markComplete: async (req, res)=>{
         try{
-            await Todo.findOneAndUpdate({_id:req.body.todoIdFromJSFile},{
+            await Item.findOneAndUpdate({_id:req.body.itemIdFromJSFile},{
                 completed: true
             })
             console.log('Marked Complete')
@@ -33,7 +33,7 @@ module.exports = {
     },
     markIncomplete: async (req, res)=>{
         try{
-            await Todo.findOneAndUpdate({_id:req.body.todoIdFromJSFile},{
+            await Item.findOneAndUpdate({_id:req.body.itemIdFromJSFile},{
                 completed: false
             })
             console.log('Marked Incomplete')
@@ -42,11 +42,11 @@ module.exports = {
             console.log(err)
         }
     },
-    deleteTodo: async (req, res)=>{
-        console.log(req.body.todoIdFromJSFile)
+    deleteItem: async (req, res)=>{
+        console.log(req.body.itemIdFromJSFile)
         try{
-            await Todo.findOneAndDelete({_id:req.body.todoIdFromJSFile})
-            console.log('Deleted Todo')
+            await Item.findOneAndDelete({_id:req.body.itemIdFromJSFile})
+            console.log('Deleted Item')
             res.json('Deleted It')
         }catch(err){
             console.log(err)
